@@ -78,6 +78,17 @@ class ViewController: UIViewController {
 		button.layer.cornerRadius = 4.0
 		return button
 	}()
+	
+	fileprivate lazy var showSelectionViewButton: UIButton = {
+		let button = UIButton(type: .system)
+		button.setTitle("Show Selection View", for: .normal)
+		button.setTitleColor(.black, for: .normal)
+		button.titleLabel?.font = .systemFont(ofSize: 20)
+		button.layer.borderWidth = 1.0
+		button.layer.borderColor = UIColor.black.cgColor
+		button.layer.cornerRadius = 4.0
+		return button
+	}()
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -100,9 +111,13 @@ class ViewController: UIViewController {
 		self.changeTitleHiddenButton.frame = CGRect(x: 15, y: changeBorderColorButton.frame.maxY + 25, width: screenWidth - 30, height: 50)
 		self.changeTitleHiddenButton.addTarget(self, action: #selector(changeTitleHidden(_:)), for: .touchUpInside)
 		
-		self.view.addSubview(changeHintHiddenButton)
-		self.changeHintHiddenButton.frame = CGRect(x: 15, y: changeTitleHiddenButton.frame.maxY + 25, width: screenWidth - 30, height: 50)
-		self.changeHintHiddenButton.addTarget(self, action: #selector(changeHintHidden(_:)), for: .touchUpInside)
+//		self.view.addSubview(changeHintHiddenButton)
+//		self.changeHintHiddenButton.frame = CGRect(x: 15, y: changeTitleHiddenButton.frame.maxY + 25, width: screenWidth - 30, height: 50)
+//		self.changeHintHiddenButton.addTarget(self, action: #selector(changeHintHidden(_:)), for: .touchUpInside)
+		
+		self.view.addSubview(showSelectionViewButton)
+		self.showSelectionViewButton.frame = CGRect(x: 15, y: changeTitleHiddenButton.frame.maxY + 25, width: screenWidth - 30, height: 50)
+		self.showSelectionViewButton.addTarget(self, action: #selector(showSelectionView(_:)), for: .touchUpInside)
 	}
 	
 	@objc func changeHint(_ sender: UIButton) {
@@ -122,7 +137,37 @@ class ViewController: UIViewController {
 	@objc func changeHintHidden(_ sender: UIButton) {
 		self.textField.isHintHidden = !self.textField.isHintHidden
 	}
+	
+	@objc func showSelectionView(_ sender: UIButton) {
+		let selectionView = CBSelectionViewController()
+		selectionView.dataSource = self
+		selectionView.delegate = self
+		selectionView.show(for: sender)
+	}
 
 
+}
+
+extension ViewController: CBSelectionViewControllerDataSource, CBSelectionViewControllerDelegate {
+	
+	func numberOfItemForSelectionViewController(_ selectionView: CBSelectionViewController) -> Int {
+		return 3
+	}
+	
+	func selectionViewController(_ selectionView: CBSelectionViewController, titleForSelectionAt index: Int) -> String? {
+		switch index {
+		case 0:
+			return "Market"
+			
+		case 1:
+			return "Limit"
+			
+		case 2:
+			return "Market Stop"
+			
+		default:
+			return nil
+		}
+	}
 }
 
